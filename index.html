@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rotork Fluid Systems – Customer Intake</title>
+  <style>
+    :root { --rotork:#c40000; --bg:#f6f7f9; --text:#1a1a1a; --line:#e6e8eb; }
+    body { margin:0; font-family: system-ui, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--text); }
+    header { background:var(--rotork); color:#fff; padding:18px 24px; }
+    main { max-width: 1100px; margin: 24px auto; background:#fff; padding:24px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    h1 { font-size:20px; margin:0; }
+    h2 { font-size:16px; margin:18px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line); }
+    .grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; }
+    .row { display:flex; gap:12px; }
+    label { font-weight:600; font-size:13px; display:block; margin-bottom:6px; }
+    .req { color: var(--rotork); font-weight:700; }
+    input[type=text], input[type=number], input[type=email], select { width:100%; padding:10px; border:1px solid #d7d9dc; border-radius:8px; font-size:14px; }
+    .units { width:120px; }
+    .hint { font-size:12px; color:#666; }
+    .actions { display:flex; gap:12px; margin-top:20px; align-items:center; flex-wrap:wrap; }
+    button { background:var(--rotork); color:#fff; border:none; border-radius:8px; padding:10px 16px; font-weight:600; cursor:pointer; }
+    button.secondary { background:#fff; color:var(--rotork); border:1px solid var(--rotork); }
+    .badge { padding:6px 10px; border-radius:999px; font-size:12px; border:1px solid; }
+    .ok { background:#e6f7ed; color:#0a7a33; border-color:#bfe6cb; }
+    .warn { background:#fff6e5; color:#8a5a00; border-color:#ffe1a1; }
+    footer { text-align:center; color:#777; font-size:12px; padding:20px; }
+    @media (max-width: 700px){ .grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Rotork Fluid Systems – Customer Intake Form</h1>
+  </header>
+  <main>
+    <p class="hint"><strong>Minimum required to submit:</strong> <span class="req">Supply Medium</span>, <span class="req">Fail Action</span>, <span class="req">BTO Torque</span>, and <span class="req">Supply Pressure</span>. All other fields are optional.</p>
+
+    <form id="intakeForm">
+      <h2>Customer & Project (optional)</h2>
+      <div class="grid">
+        <div>
+          <label>End User / Project Reference</label>
+          <input name="project_ref" type="text" />
+        </div>
+        <div>
+          <label>Quote Due Date</label>
+          <input name="quote_due" type="text" placeholder="YYYY-MM-DD" />
+        </div>
+      </div>
+
+      <h2>Selection</h2>
+      <div class="grid">
+        <div>
+          <label><span class="req">Supply Medium</span></label>
+          <select id="supply" name="supply" required>
+            <option value="">— Select —</option>
+            <option>Hydraulic</option>
+            <option>Pneumatic</option>
+            <option>ElectroHydraulic</option>
+            <option>GasOverOil</option>
+          </select>
+        </div>
+        <div>
+          <label>Preferred Actuator Family</label>
+          <select id="family" name="family">
+            <option value="">— Select Supply Medium first —</option>
+          </select>
+        </div>
+        <div>
+          <label>Valve Type</label>
+          <select name="valve_type">
+            <option value="">— Select —</option>
+            <option>Ball</option>
+            <option>Butterfly</option>
+            <option>Plug</option>
+            <option>Gate</option>
+            <option>Globe</option>
+            <option>Damper</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label><span class="req">Fail Action</span></label>
+          <select name="fail_action" id="fail_action" required>
+            <option value="">— Select —</option>
+            <option>Fail Open</option>
+            <option>Fail Close</option>
+            <option>Fail Last</option>
+          </select>
+        </div>
+      </div>
+
+      <h2>Valve & Torque</h2>
+      <div class="grid">
+        <div class="row">
+          <div style="flex:2">
+            <label>Valve Size</label>
+            <input name="valve_size" type="number" step="any" />
+          </div>
+          <div style="flex:1">
+            <label class="hint">Units</label>
+            <select name="valve_size_units" class="units">
+              <option>in</option>
+              <option>mm</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label>Pressure Class</label>
+          <input name="pressure_class" type="text" />
+        </div>
+        <div class="row">
+          <div style="flex:2">
+            <label><span class="req">BTO Torque Value</span></label>
+            <input name="bto_value" id="bto_value" type="number" step="any" required />
+          </div>
+          <div style="flex:1">
+            <label class="hint">Units</label>
+            <select name="bto_units" id="bto_units" class="units" required>
+              <option>lbf·in</option>
+              <option>ft·lbf</option>
+              <option>Nm</option>
+              <option>lb</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label>Torque (lbf·in) – converted</label>
+          <input name="bto_lbf_in" id="bto_lbf_in" type="number" step="any" readonly />
+        </div>
+      </div>
+
+      <h2>Operating Times (optional)</h2>
+      <div class="grid">
+        <div class="row">
+          <div style="flex:2">
+            <label>Operating Time – OPEN (seconds)</label>
+            <input name="op_time_open" id="op_time_open" type="number" min="1" max="600" step="1" />
+          </div>
+          <div style="flex:1">
+            <label class="hint">Units</label>
+            <select name="op_time_open_units" class="units">
+              <option>sec.</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:2">
+            <label>Operating Time – CLOSE (seconds)</label>
+            <input name="op_time_close" id="op_time_close" type="number" min="1" max="600" step="1" />
+          </div>
+          <div style="flex:1">
+            <label class="hint">Units</label>
+            <select name="op_time_close_units" class="units">
+              <option>sec.</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <h2>Environment & Controls</h2>
+      <div class="grid">
+        <div class="row">
+          <div style="flex:2">
+            <label><span class="req">Available Supply Pressure</span></label>
+            <input name="supply_pressure" id="supply_pressure" type="number" step="any" required />
+          </div>
+          <div style="flex:1">
+            <label class="hint">Units</label>
+            <select name="supply_pressure_units" class="units" required>
+              <option>BAR</option>
+              <option>psi</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label>Hazardous Area</label>
+          <select name="hazard">
+            <option value="">— Select —</option>
+            <option>Non-Hazardous</option>
+            <option>Class I Div 2</option>
+            <option>Class I Div 1</option>
+            <option>Zone 2</option>
+            <option>Zone 1</option>
+          </select>
+        </div>
+        <div>
+          <label>Required Certifications (pick up to three)</label>
+          <div class="row">
+            <select name="cert1"><option value="">— Select —</option><option>ATEX</option><option>IECEx</option><option>CSA</option><option>UL</option><option>FM</option><option>SIL2</option><option>SIL3</option><option>Other</option></select>
+            <select name="cert2"><option value="">— Select —</option><option>ATEX</option><option>IECEx</option><option>CSA</option><option>UL</option><option>FM</option><option>SIL2</option><option>SIL3</option><option>Other</option></select>
+            <select name="cert3"><option value="">— Select —</option><option>ATEX</option><option>IECEx</option><option>CSA</option><option>UL</option><option>FM</option><option>SIL2</option><option>SIL3</option><option>Other</option></select>
+          </div>
+        </div>
+        <div>
+          <label>Controls</label>
+          <select name="controls">
+            <option value="">— Select —</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <span id="status" class="badge warn">⚠ Incomplete (min fields not met)</span>
+        <button class="secondary" type="button" id="previewBtn">Preview</button>
+        <button type="button" id="downloadBtn">Download CSV</button>
+        <button type="button" id="emailBtn">Email to Gabriel</button>
+      </div>
+    </form>
+
+    <div id="preview" style="display:none; margin-top:18px;">
+      <h2>Preview</h2>
+      <pre id="previewJson" style="background:#f7f7f7; padding:12px; border-radius:8px; overflow:auto"></pre>
+    </div>
+  </main>
+  <footer>© Rotork Fluid Systems</footer>
+
+  <script>
+    const familiesMap = {
+      Hydraulic: ["GH","RH","RC","manPower"],
+      Pneumatic: ["GP","CP","GT","K-TORK","Type K"],
+      ElectroHydraulic: ["Modular EH","Skilmatic SI","Other Electro-Hydraulic"],
+      GasOverOil: ["GO","HPG"]
+    };
+
+    const supply = document.getElementById('supply');
+    const family = document.getElementById('family');
+    const btoUnits = document.getElementById('bto_units');
+    const btoValue = document.getElementById('bto_value');
+    const btoLbfIn = document.getElementById('bto_lbf_in');
+    const statusEl = document.getElementById('status');
+
+    supply.addEventListener('change', () => {
+      const options = familiesMap[supply.value] || [];
+      family.innerHTML = '<option value="">— Select —</option>' + options.map(v => `<option>${v}</option>`).join('');
+    });
+
+    function toLbfIn(val, units){
+      const v = parseFloat(val || 0);
+      if (units === 'ft·lbf') return v*12;
+      if (units === 'Nm') return v*8.8507457676;
+      return v; // lbf·in and 'lb' fallback
+    }
+
+    function updateTorque(){ btoLbfIn.value = toLbfIn(btoValue.value, btoUnits.value).toFixed(3); }
+    btoUnits.addEventListener('input', updateTorque);
+    btoValue.addEventListener('input', updateTorque);
+
+    // Minimal completeness: Supply Medium, Fail Action, BTO Torque, Supply Pressure
+    function minComplete(){
+      const f = document.getElementById('intakeForm').elements;
+      const hasSupply = (f.supply && String(f.supply.value).trim() !== '');
+      const hasFail = (f.fail_action && String(f.fail_action.value).trim() !== '');
+      const hasBto = (f.bto_value && String(f.bto_value.value).trim() !== '');
+      const hasSP  = (f.supply_pressure && String(f.supply_pressure.value).trim() !== '');
+      return hasSupply && hasFail && hasBto && hasSP;
+    }
+    function paintStatus(){
+      if(minComplete()){ statusEl.textContent='✓ Ready to Submit (minimum met)'; statusEl.className='badge ok'; }
+      else { statusEl.textContent='⚠ Incomplete (min fields not met)'; statusEl.className='badge warn'; }
+    }
+    document.getElementById('intakeForm').addEventListener('input', paintStatus);
+    paintStatus();
+
+    // Preview
+    document.getElementById('previewBtn').addEventListener('click', () => {
+      const f = document.getElementById('intakeForm').elements;
+      const payload = {
+        project_ref: f.project_ref.value,
+        quote_due: f.quote_due.value,
+        supply: f.supply.value,
+        family: f.family.value,
+        valve_type: f.valve_type.value,
+        valve_size: f.valve_size.value + ' ' + f.valve_size_units.value,
+        pressure_class: f.pressure_class.value,
+        bto_value: f.bto_value.value,
+        bto_units: f.bto_units.value,
+        bto_value_lbf_in: toLbfIn(f.bto_value.value, f.bto_units.value),
+        op_time_open_sec: f.op_time_open.value,
+        op_time_close_sec: f.op_time_close.value,
+        supply_pressure: f.supply_pressure.value + (f.supply_pressure.value?(' '+f.supply_pressure_units.value):''),
+        hazard: f.hazard.value,
+        certs: [f.cert1.value, f.cert2.value, f.cert3.value].filter(Boolean),
+        controls: f.controls.value
+      };
+      document.getElementById('previewJson').textContent = JSON.stringify(payload, null, 2);
+      document.getElementById('preview').style.display = 'block';
+    });
+
+    // CSV Export
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const f = document.getElementById('intakeForm').elements;
+      const headers = [
+        'Project Reference','Quote Due','Supply Medium','Preferred Family','Valve Type','Valve Size','Pressure Class',
+        'BTO Value','BTO Units','BTO (lbf·in)','Op Time Open (sec)','Op Time Close (sec)','Supply Pressure','Hazardous Area','Cert 1','Cert 2','Cert 3','Controls'
+      ];
+      const row = [
+        f.project_ref.value, f.quote_due.value, f.supply.value, f.family.value, f.valve_type.value,
+        `${f.valve_size.value} ${f.valve_size_units.value}`, f.pressure_class.value,
+        f.bto_value.value, f.bto_units.value, toLbfIn(f.bto_value.value, f.bto_units.value),
+        f.op_time_open.value, f.op_time_close.value,
+        f.supply_pressure.value ? `${f.supply_pressure.value} ${f.supply_pressure_units.value}` : '',
+        f.hazard.value, f.cert1.value, f.cert2.value, f.cert3.value, f.controls.value
+      ];
+      const esc = v => '"' + String(v ?? '').replaceAll('"','""') + '"';
+      const csv = [headers.join(','), row.map(esc).join(',')].join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'Rotork_Intake.csv'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Email to Gabriel via mailto (Option A)
+    function buildEmailBody(f){
+      const items = [
+        ['Supply Medium', f.supply.value],
+        ['Fail Action', f.fail_action.value],
+        ['BTO Torque', `${f.bto_value.value} ${f.bto_units.value}`.trim()],
+        ['BTO (lbf·in)', document.getElementById('bto_lbf_in').value],
+        ['Supply Pressure', f.supply_pressure.value ? `${f.supply_pressure.value} ${f.supply_pressure_units.value}` : ''],
+        ['Preferred Family', f.family.value],
+        ['Valve Type', f.valve_type.value],
+        ['Valve Size', `${f.valve_size.value} ${f.valve_size_units.value}`.trim()],
+        ['Pressure Class', f.pressure_class.value],
+        ['Operating Time OPEN (sec)', f.op_time_open.value],
+        ['Operating Time CLOSE (sec)', f.op_time_close.value],
+        ['Hazardous Area', f.hazard.value],
+        ['Certifications', [f.cert1.value, f.cert2.value, f.cert3.value].filter(Boolean).join(', ')],
+        ['Controls', f.controls.value],
+        ['Project Ref', f.project_ref.value],
+        ['Quote Due', f.quote_due.value]
+      ];
+      return items.map(([k,v]) => `${k}: ${v || ''}`).join('\n');
+    }
+
+    document.getElementById('emailBtn').addEventListener('click', () => {
+      const f = document.getElementById('intakeForm').elements;
+      if(!minComplete()){
+        alert('Please complete the minimum required fields: Supply Medium, Fail Action, BTO Torque, Supply Pressure.');
+        return;
+      }
+      const subject = `Actuator Intake – ${f.supply.value || 'No Supply'} – ${f.fail_action.value || 'No Fail Action'}`;
+      const body = buildEmailBody(f);
+      const to = 'gabriel.velez@rotork.com';
+      const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailto;
+    });
+  </script>
+</body>
+</html>
