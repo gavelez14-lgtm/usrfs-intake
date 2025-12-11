@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rotork US- Fluid System Actuator Form</title>
+  <style>
+    :root { --rotork:#c40000; --bg:#f6f7f9; --text:#1a1a1a; --line:#e6e8eb; }
+    body { margin:0; font-family: system-ui, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--text); }
+    header { background:var(--rotork); color:#fff; padding:18px 24px; }
+    main { max-width: 1100px; margin: 24px auto; background:#fff; padding:24px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    h1 { font-size:20px; margin:0; }
+    h2 { font-size:16px; margin:18px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line); }
+    .grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; }
+    .row { display:flex; gap:12px; }
+    label { font-weight:600; font-size:13px; display:block; margin-bottom:6px; }
+    .req { color: var(--rotork); font-weight:700; }
+    input[type=text], input[type=number], input[type=email], select, textarea { width:100%; padding:10px; border:1px solid #d7d9dc; border-radius:8px; font-size:14px; }
+    textarea { min-height: 80px; resize: vertical; }
+    .units { width:120px; }
+    .hint { font-size:12px; color:#666; }
+    .actions { display:flex; gap:12px; margin-top:20px; align-items:center; flex-wrap:wrap; }
+    button { background:var(--rotork); color:#fff; border:none; border-radius:8px; padding:10px 16px; font-weight:600; cursor:pointer; }
+    button.secondary { background:#fff; color:var(--rotork); border:1px solid var(--rotork); }
+    .badge { padding:6px 10px; border-radius:999px; font-size:12px; border:1px solid; }
+    .ok { background:#e6f7ed; color:#0a7a33; border-color:#bfe6cb; }
+    .warn { background:#fff6e5; color:#8a5a00; border-color:#ffe1a1; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #e0e0e0; padding: 6px 8px; font-size: 13px; }
+    th { background: #f3f3f3; }
+    .remove-btn { color: #c40000; background: none; border: none; cursor: pointer; font-weight: bold; }
+    footer { text-align:center; color:#777; font-size:12px; padding:20px; }
+    @media (max-width: 700px){ .grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Rotork US- Fluid System Actuator Form</h1>
+  </header>
+  <main>
+    <p class="hint"><strong>Minimum required for each actuator:</strong> <span class="req">Supply Medium</span>, <span class="req">Fail Action</span>, <span class="req">BTO Torque</span>, and <span class="req">Supply Pressure</span>. All other fields are optional.</p>
+
+    <!-- Actuator configuration form (one at a time) -->
+    <form id="intakeForm" autocomplete="off">
+      <h2>Actuator Configuration</h2>
+      <div class="grid">
+        <div>
+          <label><span class="req">Supply Medium</span></label>
+          <select id="supply" name="supply" required>
+            <option value="">— Select —</option>
+            <option>Hydraulic</option>
+            <option>Pneumatic</option>
+            <option>ElectroHydraulic</option>
+            <option>GasOverOil</option>
+          </select>
+        </div>
+        <div>
+          <label>Preferred Actuator Family</label>
+          <select id="family" name="family">
+            <option value="">— Select Supply Medium first —</option>
+          </select>
+        </div>
+        <div>
+          <label>Valve Type</label>
+          <select name="valve_type">
+            <option value="">— Select —</option>
+            <option>Ball</option>
+            <option>Butterfly</option>
+            <option>Plug</option>
+            <option>Gate</option>
+            <option>Globe</option>
+            <option>Damper</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label><span class="req">Fail Action</span></label>
+          <select name="fail_action" id="fail_action" required>
+            <option value="">— Select —</option>
+            <option>Fail Open</option>
+            <option>Fail Close</option>
+            <option>Fail Last</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div style="flex:2">
+            <label>Valve Size</label>
+            <input name="valve_size" type="number" step="any" />
+          </div>
+          <div style="flex:1">
+            <label class="hint">Units</label>
+            <select name="valve_size_units" class="units">
+              <option>in</option>
+              <option>mm</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label>Pressure Class</label>
+          <input name="pressure_class" type="text" />
+        </div>
+
+        <div class="row">
+          <div style="flex:2">
+            <label><span class="req">BTO Torque Value</span></label>
+            <input name="bto_value" id="bto_value" type="number" step="any" required />
+          </div>
+          <div style="flex:1">
+            <label class="hint">Units</label>
+            <select name="bto_units" id="bto_units" class="units" required>
+              <option>lbf·in</option>
+              <option>ft·lbf</option>
+              <option>Nm</option>
+              <option>lb</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label>Torque (lbf·in) – converted</label>
+          <input name="bto_lbf_in" id="bto_lbf_in" type="number" step="any" readonly />
+        </div>
+
+        <div class="row">
+          <div style="flex:2">
+            <label><span class="req">Available Supply Pressure</span></label>
+            <input name="supply_pressure" id="supply_pressure" type="number" step="any" required />
+          </div>
+          <div style="flex:1">
+            <label class="hint">Units</label>
+            <select name="supply_pressure_units" class="units" required>
+              <option>BAR</option>
+              <option>psi</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label>Operating Time – OPEN (seconds)</label>
+          <input name="op_time_open" id="op_time_open" type="number" min="1" max="600" step="1" />
+        </div>
+        <div>
+          <label>Operating Time – CLOSE (seconds)</label>
+          <input name="op_time_close" id="op_time_close" type="number" min="1" max="600" step="1" />
+        </div>
+
+        <div>
+          <label>Hazardous Area</label>
+          <select name="hazard">
+            <option value="">— Select —</option>
+            <option>Non-Hazardous</option>
+            <option>Class I Div 2</option>
+            <option>Class I Div 1</option>
+            <option>Zone 2</option>
+            <option>Zone 1</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Required Certifications (pick up to three)</label>
+          <div class="row">
+            <select name="cert1"><option value="">— Select —</option><option>ATEX</option><option>IECEx</option><option>CSA</option><option>UL</option><option>FM</option><option>SIL2</option><option>SIL3</option><option>Other</option></select>
+            <select name="cert2"><option value="">— Select —</option><option>ATEX</option><option>IECEx</option><option>CSA</option><option>UL</option><option>FM</option><option>SIL2</option><option>SIL3</option><option>Other</option></select>
+            <select name="cert3"><option value="">— Select —</option><option>ATEX</option><option>IECEx</option><option>CSA</option><option>UL</option><option>FM</option><option>SIL2</option><option>SIL3</option><option>Other</option></select>
+          </div>
+        </div>
+
+        <div>
+          <label>Controls</label>
+          <select name="controls">
+            <option value="">— Select —</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:18px;">
+        <button type="button" id="addActuatorBtn">Add Actuator</button>
+        <span id="addStatus" class="hint"></span>
+      </div>
+    </form>
+
+    <h2>Actuator List</h2>
+    <div id="actuatorList"><div class="hint">No actuators added yet.</div></div>
+
+    <h2>Additional Notes</h2>
+    <textarea name="additional_notes" id="additional_notes" rows="4" placeholder="Enter any extra information or special instructions here..."></textarea>
+
+    <div class="actions">
+      <button class="secondary" type="button" id="previewBtn">Preview</button>
+      <button type="button" id="downloadBtn">Download CSV</button>
+      <button type="button" id="emailBtn">Email to Gabriel</button>
+      <span id="status" class="badge warn">⚠ Add at least one actuator to submit</span>
+    </div>
+
+    <div id="preview" style="display:none; margin-top:18px;">
+      <h2>Preview</h2>
+      <pre id="previewJson" style="background:#f7f7f7; padding:12px; border-radius:8px; overflow:auto"></pre>
+    </div>
+  </main>
+  <footer>© Rotork Fluid Systems</footer>
+
+  <script>
+    // Family options by Supply Medium
+    const familiesMap = {
+      Hydraulic: ["GH","RH","RC","manPower"],
+      Pneumatic: ["GP","CP","GT","K-TORK","Type K"],
+      ElectroHydraulic: ["Modular EH","Skilmatic SI","Other Electro-Hydraulic"],
+      GasOverOil: ["GO","HPG"]
+    };
+
+    const supply = document.getElementById('supply');
+    const family = document.getElementById('family');
+    const btoUnits = document.getElementById('bto_units');
+    const btoValue = document.getElementById('bto_value');
+    const btoLbfIn = document.getElementById('bto_lbf_in');
+
+    const statusEl = document.getElementById('status');
+    const addStatus = document.getElementById('addStatus');
+    const actuatorListDiv = document.getElementById('actuatorList');
+    const notesEl = document.getElementById('additional_notes');
+
+    let actuators = [];
+
+    // Dependent dropdown
+    supply.addEventListener('change', () => {
+      const options = familiesMap[supply.value] || [];
+      family.innerHTML = '<option value="">— Select —</option>' + options.map(v => `<option>${v}</option>`).join('');
+    });
+
+    // Torque conversion to lbf·in
+    function toLbfIn(val, units){
+      const v = parseFloat(val || 0);
+      if (units === 'ft·lbf') return v*12;
+      if (units === 'Nm') return v*8.8507457676;
+      return v; // lbf·in and 'lb' fallback
+    }
+    function updateTorque(){ btoLbfIn.value = toLbfIn(btoValue.value, btoUnits.value).toFixed(3); }
+    btoUnits.addEventListener('input', updateTorque);
+    btoValue.addEventListener('input', updateTorque);
+
+    // Per-actuator minimum completeness
+    function minComplete(formEls){
+      const hasSupply = formEls.supply && String(formEls.supply.value).trim() !== '';
+      const hasFail   = formEls.fail_action && String(formEls.fail_action.value).trim() !== '';
+      const hasBto    = formEls.bto_value && String(formEls.bto_value.value).trim() !== '';
+      const hasSP     = formEls.supply_pressure && String(formEls.supply_pressure.value).trim() !== '';
+      return hasSupply && hasFail && hasBto && hasSP;
+    }
+
+    // Clear form after adding
+    function clearForm(){
+      document.getElementById('intakeForm').reset();
+      updateTorque();
+      // Reset family dropdown prompt
+      family.innerHTML = '<option value="">— Select Supply Medium first —</option>';
+    }
+
+    // Render actuator list table
+    function renderActuatorList(){
+      if (actuators.length === 0) {
+        actuatorListDiv.innerHTML = '<div class="hint">No actuators added yet.</div>';
+        statusEl.textContent = '⚠ Add at least one actuator to submit';
+        statusEl.className = 'badge warn';
+        return;
+      }
+      let html = '<table><thead><tr>';
+      const headers = [
+        'Supply Medium','Family','Valve Type','Fail Action',
+        'Valve Size','Valve Units','Pressure Class',
+        'BTO Value','BTO Units','BTO (lbf·in)',
+        'Supply Pressure','Supply Units',
+        'Op Time Open','Op Time Close',
+        'Hazard','Cert 1','Cert 2','Cert 3',
+        'Controls','Remove'
+      ];
+      headers.forEach(h => html += `<th>${h}</th>`);
+      html += '</tr></thead><tbody>';
+
+      actuators.forEach((a,i) => {
+        html += '<tr>' +
+          `<td>${a.supply}</td><td>${a.family}</td><td>${a.valve_type}</td><td>${a.fail_action}</td>` +
+          `<td>${a.valve_size}</td><td>${a.valve_size_units}</td><td>${a.pressure_class}</td>` +
+          `<td>${a.bto_value}</td><td>${a.bto_units}</td><td>${a.bto_value_lbf_in}</td>` +
+          `<td>${a.supply_pressure}</td><td>${a.supply_pressure_units}</td>` +
+          `<td>${a.op_time_open}</td><td>${a.op_time_close}</td>` +
+          `<td>${a.hazard}</td><td>${a.cert1}</td><td>${a.cert2}</td><td>${a.cert3}</td>` +
+          `<td>${a.controls}</td>` +
+          `<td><button class="remove-btn" onclick="removeActuator(${i})">✕</button></td>` +
+        '</tr>';
+      });
+      html += '</tbody></table>';
+      actuatorListDiv.innerHTML = html;
+
+      statusEl.textContent = '✓ Ready to Submit';
+      statusEl.className = 'badge ok';
+    }
+
+    // Remove actuator by index (exposed on window for inline onclick)
+    window.removeActuator = function(idx){
+      actuators.splice(idx,1);
+      renderActuatorList();
+    };
+
+    // Add actuator button
+    document.getElementById('addActuatorBtn').addEventListener('click', () => {
+      const f = document.getElementById('intakeForm').elements;
+      if(!minComplete(f)){
+        addStatus.textContent = 'Please complete the required fields for this actuator: Supply Medium, Fail Action, BTO Torque, Supply Pressure.';
+        setTimeout(()=>addStatus.textContent='',2000);
+        return;
+      }
+      const actuator = {
+        supply: f.supply.value,
+        family: f.family.value,
+        valve_type: f.valve_type.value,
+        fail_action: f.fail_action.value,
+        valve_size: f.valve_size.value,
+        valve_size_units: f.valve_size_units.value,
+        pressure_class: f.pressure_class.value,
+        bto_value: f.bto_value.value,
+        bto_units: f.bto_units.value,
+        bto_value_lbf_in: toLbfIn(f.bto_value.value, f.bto_units.value),
+        supply_pressure: f.supply_pressure.value,
+        supply_pressure_units: f.supply_pressure_units.value,
+        op_time_open: f.op_time_open.value,
+        op_time_close: f.op_time_close.value,
+        hazard: f.hazard.value,
+        cert1: f.cert1.value,
+        cert2: f.cert2.value,
+        cert3: f.cert3.value,
+        controls: f.controls.value
+      };
+      actuators.push(actuator);
+      clearForm();
+      renderActuatorList();
+      addStatus.textContent = 'Actuator added!';
+      setTimeout(()=>addStatus.textContent='',1200);
+    });
+
+    // Preview payload (all actuators + notes)
+    document.getElementById('previewBtn').addEventListener('click', () => {
+      const payload = { actuators, additional_notes: notesEl.value };
+      document.getElementById('previewJson').textContent = JSON.stringify(payload, null, 2);
+      document.getElementById('preview').style.display = 'block';
+    });
+
+    // CSV Export (multi-row)
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      if(actuators.length === 0){
+        alert('Please add at least one actuator.');
+        return;
+      }
+      const headers = [
+        'Supply Medium','Family','Valve Type','Fail Action',
+        'Valve Size','Valve Units','Pressure Class',
+        'BTO Value','BTO Units','BTO (lbf·in)',
+        'Supply Pressure','Supply Units',
+        'Op Time Open (sec)','Op Time Close (sec)',
+        'Hazard','Cert 1','Cert 2','Cert 3',
+        'Controls','Additional Notes'
+      ];
+      const esc = v => '"' + String(v ?? '').replaceAll('"','""') + '"';
+      const rows = actuators.map(a => [
+        a.supply, a.family, a.valve_type, a.fail_action,
+        a.valve_size, a.valve_size_units, a.pressure_class,
+        a.bto_value, a.bto_units, a.bto_value_lbf_in,
+        a.supply_pressure, a.supply_pressure_units,
+        a.op_time_open, a.op_time_close,
+        a.hazard, a.cert1, a.cert2, a.cert3,
+        a.controls, notesEl.value
+      ].map(esc).join(','));
+
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = 'Rotork_Intake_Multi.csv'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Build email body for all actuators + notes
+    function buildEmailBody(){
+      const lines = [];
+      lines.push(`Total actuators: ${actuators.length}`);
+      lines.push('');
+      actuators.forEach((a, idx) => {
+        lines.push(`Actuator #${idx+1}`);
+        lines.push(`  Supply Medium: ${a.supply}`);
+        lines.push(`  Fail Action: ${a.fail_action}`);
+        lines.push(`  BTO Torque: ${a.bto_value} ${a.bto_units}`);
+        lines.push(`  BTO (lbf·in): ${a.bto_value_lbf_in}`);
+        lines.push(`  Supply Pressure: ${a.supply_pressure} ${a.supply_pressure_units}`);
+        if (a.family)       lines.push(`  Family: ${a.family}`);
+        if (a.valve_type)   lines.push(`  Valve Type: ${a.valve_type}`);
+        if (a.valve_size)   lines.push(`  Valve Size: ${a.valve_size} ${a.valve_size_units}`);
+        if (a.pressure_class) lines.push(`  Pressure Class: ${a.pressure_class}`);
+        if (a.op_time_open) lines.push(`  Op Time OPEN (sec): ${a.op_time_open}`);
+        if (a.op_time_close) lines.push(`  Op Time CLOSE (sec): ${a.op_time_close}`);
+        if (a.hazard)       lines.push(`  Hazardous Area: ${a.hazard}`);
+        const certs = [a.cert1, a.cert2, a.cert3].filter(Boolean).join(', ');
+        if (certs)          lines.push(`  Certifications: ${certs}`);
+        if (a.controls)     lines.push(`  Controls: ${a.controls}`);
+        lines.push(''); // spacer
+      });
+      if (notesEl.value) {
+        lines.push('Additional Notes:');
+        lines.push(notesEl.value);
+      }
+      return lines.join('\n');
+    }
+
+    // Email to Gabriel via mailto (Option A) — requires at least one actuator
+    document.getElementById('emailBtn').addEventListener('click', () => {
+      if(actuators.length === 0){
+        alert('Please add at least one actuator before emailing.');
+        return;
+      }
+      // Subject based on first actuator
+      const a0 = actuators[0] || {};
+      const subject = `Actuator Intake – ${a0.supply || 'No Supply'} – ${a0.fail_action || 'No Fail Action'} (${actuators.length} items)`;
+      const body    = buildEmailBody();
+      const to      = 'gabriel.velez@rotork.com';
+      const mailto  = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailto;
+    });
+  </script>
+</body>
+</html>
